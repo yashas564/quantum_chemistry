@@ -1,0 +1,35 @@
+import pennylane as qml
+from pennylane import numpy as np
+import matplotlib.pyplot as plt
+
+# Simplified Hamiltonian for a diatomic molecule (H2 model)
+H = (
+    -1.0523732 * qml.PauliZ(0)
+    -1.0523732 * qml.PauliZ(1)
+    +0.0112801 * qml.PauliZ(0) @ qml.PauliZ(1)
+    +0.3979374 * qml.PauliX(0) @ qml.PauliX(1)
+)
+
+# Convert Hamiltonian to matrix
+H_matrix = qml.matrix(H)
+
+# Compute eigenvalues (energies)
+energies, states = np.linalg.eigh(H_matrix)
+
+# Sort energies
+energies = np.sort(energies)
+
+ground_energy = energies[0]
+excited_energies = energies[1:]
+
+print("Ground State Energy:", ground_energy)
+print("Excited State Energies:", excited_energies)
+
+# Energy comparison plot
+labels = ["Ground State", "Excited State 1", "Excited State 2"]
+energy_levels = [ground_energy, excited_energies[0], excited_energies[1]]
+
+plt.bar(labels, energy_levels)
+plt.ylabel("Energy (Hartree)")
+plt.title("Ground vs Excited State Energies (Photochemical Analysis)")
+plt.show()
