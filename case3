@@ -1,0 +1,38 @@
+import pennylane as qml
+from pennylane import numpy as np
+import matplotlib.pyplot as plt
+
+# Simplified 2-qubit Hamiltonian (model system)
+H = (
+    -1.0523732 * qml.PauliZ(0)
+    -1.0523732 * qml.PauliZ(1)
+    +0.0112801 * qml.PauliZ(0) @ qml.PauliZ(1)
+    +0.3979374 * qml.PauliX(0) @ qml.PauliX(1)
+)
+
+# Convert Hamiltonian to matrix
+H_matrix = qml.matrix(H)
+
+# Compute eigenvalues (energy levels)
+energies, _ = np.linalg.eigh(H_matrix)
+
+# Sort energies
+energies = np.sort(energies)
+
+# Ground and lowest excited state
+ground_energy = energies[0]
+first_excited_energy = energies[1]
+
+# Band gap approximation
+band_gap = first_excited_energy - ground_energy
+
+print("Ground State Energy:", ground_energy)
+print("First Excited State Energy:", first_excited_energy)
+print("Estimated Band Gap (Hartree):", band_gap)
+
+# Visualization
+plt.bar(["Ground State", "First Excited State"],
+        [ground_energy, first_excited_energy])
+plt.ylabel("Energy (Hartree)")
+plt.title("Band Gap Approximation using Excited States")
+plt.show()
