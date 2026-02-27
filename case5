@@ -1,0 +1,44 @@
+import pennylane as qml
+from pennylane import numpy as np
+import matplotlib.pyplot as plt
+
+# Simplified 2-qubit Hamiltonian for H2 molecule
+H = (
+    -1.0523732 * qml.PauliZ(0)
+    -1.0523732 * qml.PauliZ(1)
+    +0.0112801 * qml.PauliZ(0) @ qml.PauliZ(1)
+    +0.3979374 * qml.PauliX(0) @ qml.PauliX(1)
+)
+
+# Convert Hamiltonian to matrix
+H_matrix = qml.matrix(H)
+
+# Compute eigenvalues (energy levels)
+energies, _ = np.linalg.eigh(H_matrix)
+
+# Sort energies
+energies = np.sort(energies)
+
+ground_energy = energies[0]
+excited_energies = energies[1:]
+
+print("Ground State Energy:", ground_energy)
+print("Excited State Energies:", excited_energies)
+
+# Energy gaps (separation)
+energy_gaps = excited_energies - ground_energy
+print("Energy Gaps from Ground State:", energy_gaps)
+
+# ----------------------------------
+# Energy Level Diagram
+# ----------------------------------
+plt.figure()
+
+for i, e in enumerate(energies):
+    plt.hlines(e, xmin=0, xmax=1)
+    plt.text(1.05, e, f"State {i}", va='center')
+
+plt.ylabel("Energy (Hartree)")
+plt.title("Energy Levels for Bonding & Stability Analysis")
+plt.xticks([])
+plt.show()
